@@ -65,12 +65,12 @@ function obtener_pregurespu(accion,tipo,json) {
 		if(tipo=="preguntas"){
 			Object.keys(localStorage).forEach( y => {
 				var x = JSON.parse( localStorage.getItem(y) )
-				mostrar_pregurespu( "dp", x.ts, x.pregunta, "#ddde" )
+				mostrar_pregurespu( "dp", x.ts, x.pregunta, "#ccce" )
 			})
 		}
 		var x = z && JSON.parse(window.localStorage.getItem(z.ts))
 		if(tipo=="una_pregunta"){
-			mostrar_pregurespu( "dp", x.ts, x.pregunta, "#ddde" )
+			mostrar_pregurespu( "dp", x.ts, x.pregunta, "#ccce" )
 		}
 		if(tipo=="una_respuesta"){
 			mostrar_pregurespu( "dr", (json.ts), x.respuesta, "#ddde" )

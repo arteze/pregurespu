@@ -150,10 +150,10 @@ function obtener_<?php echo "$n"; ?>(accion,tipo,json) {
 	}).then(x=>{
 		if(accion=="leer"){
 			if(tipo=="preguntas"){
-				x.forEach( y => mostrar_<?php echo "$n"; ?>( "dp", y.ts, y.pregunta, "#ddde" ))
+				x.forEach( y => mostrar_<?php echo "$n"; ?>( "dp", y.ts, y.pregunta, "#ccce" ))
 			}
 			if(tipo=="una_pregunta"){
-				mostrar_<?php echo "$n"; ?>( "dp", z.ts, z.pregunta, "#ddde" )
+				mostrar_<?php echo "$n"; ?>( "dp", z.ts, z.pregunta, "#ccce" )
 			}
 			if(tipo=="una_respuesta"){
 				mostrar_<?php echo "$n"; ?>( "dr", (x.ts), x.respuesta, "#ddde" )
