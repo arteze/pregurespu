@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>pregurespu</title>
+	<meta charset="UTF-8">
+</head>
+<body>
+	<div id="form">
+		<a for="pregunta">Pregunta:</a>
+		<input type="text" id="pregunta">
+		<a for="respuesta">Respuesta:</a>
+		<textarea id="respuesta"></textarea>
+		<button type="button" onclick="enviarPregunta()">Guardar</button>
+		<button type="button" onclick="limpiarLocalStorage()">Limpiar localStorage</button>
+	</div>
+	<div style="display: flex;">
+		<div style="width: 30%; border: 1px solid black; background-color: #8887" id="dp"></div>
+		<div style="width: 70%; border: 1px solid black; background-color: #bbb7" id="dr"></div>
+	</div>
+</body>
+	<script>
+function limpiarLocalStorage(e) {
+	window.localStorage.clear()
+	window.dp.innerHTML = ""
+	window.dr.innerHTML = ""
+}
+function ver_una_respuesta(e) {
+	var o = e.target
+	obtener_pregurespu( "leer", "una_respuesta", {ts: e.target.id} )
+}
+function crearDiv( elem, ts , texto , color ) {
+	var div = document.createElement('div');
+	var enlace = document.createElement('a');
+	enlace.id = ts;
+	enlace.textContent = texto;
+	div.style.backgroundColor = color;
+	if( elem == "dp" ){ enlace.href = "#"; }
+	enlace.addEventListener("click", function(e) {
+	  ver_una_respuesta(e);
+	});
+	div.appendChild(enlace);
+	return div;
+}
+
+function mostrar_pregurespu(elem,ts,texto,color){
+	var container = window[elem];
+	var div = crearDiv( elem, ts, texto, color );
+	var fp = document.createDocumentFragment();
+	fp.appendChild(div);
+	if( elem == "dr" ){ container.innerHTML = "" }
+	container.appendChild(fp);
+}
+function obtener_pregurespu(accion,tipo,json) {
+	var params = new URLSearchParams();
+	var z = null
+	params.append("accion",accion);
+	params.append("tipo",tipo);
+	if(json){
+		z = json;
+		z.ts && params.append("ts",z.ts );
+		z.pregunta && params.append("pregunta",z.pregunta );
+		z.respuesta && params.append("respuesta",z.respuesta );
+	}
+	if(accion=="leer"){
+		if(tipo=="preguntas"){
+			Object.keys(localStorage).forEach( y => {
+				var x = JSON.parse( localStorage.getItem(y) )
+				mostrar_pregurespu( "dp", x.ts, x.pregunta, "#ddde" )
+			})
+		}
+		var x = z && JSON.parse(window.localStorage.getItem(z.ts))
+		if(tipo=="una_pregunta"){
+			mostrar_pregurespu( "dp", x.ts, x.pregunta, "#ddde" )
+		}
+		if(tipo=="una_respuesta"){
+			mostrar_pregurespu( "dr", (json.ts), x.respuesta, "#ddde" )
+		}
+	}
+	if(accion=="escribir"){
+		var json = {
+			ts: Date.now()
+			, pregunta: window.pregunta.value
+			, respuesta: window.respuesta.value
+		}
+		window.localStorage.setItem(Date.now(),JSON.stringify(json))
+		obtener_pregurespu("leer","una_pregunta",json)
+	}
+}
+function ver_las_preguntas(){
+	obtener_pregurespu("leer","preguntas");
+}
+function enviarPregunta(pregunta){
+	var json = {
+		pregunta: window.pregunta.value
+		, respuesta: window.respuesta.value
+	}
+	obtener_pregurespu("escribir","pregurespu",json)
+}
+window.i = 0
+document.onreadystatechange = function(){
+	++window.i
+	if(	window.i==2){
+		ver_las_preguntas()
+	}
+}
+	</script>
+</html>
