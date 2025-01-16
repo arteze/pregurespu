@@ -30,15 +30,20 @@ function ver_una_respuesta(e) {
 }
 function crearDiv( elem, ts , texto , color ) {
 	var div = document.createElement('div');
-	var enlace = document.createElement('a');
-	enlace.id = ts;
-	enlace.textContent = texto;
+	var contenido = null
+	if( elem == "dp" ){
+		contenido = document.createElement('a');
+		contenido.href = "#";
+	}else{
+		contenido = document.createElement('pre');
+	}
+	contenido.id = ts;
+	contenido.textContent = texto;
 	div.style.backgroundColor = color;
-	if( elem == "dp" ){ enlace.href = "#"; }
-	enlace.addEventListener("click", function(e) {
+	contenido.addEventListener("click", function(e) {
 	  ver_una_respuesta(e);
 	});
-	div.appendChild(enlace);
+	div.appendChild(contenido);
 	return div;
 }
 
