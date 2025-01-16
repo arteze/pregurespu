@@ -1,5 +1,10 @@
 <?php
 $n="pregurespu";
+function borrar_todo($n) {
+	foreach (glob("$n/*.json") as $archivo) {
+		unlink($archivo);
+	}
+}
 function obtener_preguntas($n) {
 	$array = [];
 	foreach (glob("$n/*.json") as $archivo) {
@@ -38,9 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 					exit;
 					break;
 				case "$n":
-					$preguntas = obtener_preguntas();
-					$respuesta = obtener_una_respuesta($ts,$n);
-					echo json_encode($json);
+					borrar_todo("$n");
 					exit;
 					break;
 			}
@@ -76,6 +79,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 			]);
 			exit;
 			break;
+		case 'borrar':
+			switch ($tipo) {
+				case "${n}s":
+					borrar_todo($n);
+					echo "{fin_borrado:true}";
+					exit;
+					break;
+			}
 	}
 }
 ?>
@@ -93,6 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 		<a for="respuesta">Respuesta:</a>
 		<textarea id="respuesta"></textarea>
 		<button type="button" onclick="enviarPregunta()">Guardar</button>
+		<button type="button" onclick="borrar<?php echo "$n"; ?>()">Borrar todo</button>
 	</div>
 	<div style="display: flex;">
 		<div style="width: 30%; border: 1px solid black; background-color: #8887" id="dp"></div>
@@ -100,21 +112,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 	</div>
 </body>
 	<script>
+function borrar<?php echo "$n"; ?>(e) {
+	obtener_<?php echo "$n"; ?>("borrar","<?php echo "$n"; ?>s")
+}
 function ver_una_respuesta(e) {
 	var o = e.target
 	obtener_<?php echo "$n"; ?>( "leer", "una_respuesta", {ts: e.target.id} )
 }
 function crearDiv( elem, ts , texto , color ) {
 	var div = document.createElement('div');
-	var enlace = document.createElement('a');
-	enlace.id = ts;
-	enlace.textContent = texto;
+	var contenido = null
+	if( elem == "dp" ){
+		contenido = document.createElement('a');
+		contenido.href = "#";
+	}else{
+		contenido = document.createElement('pre');
+	}
+	contenido.id = ts;
+	contenido.textContent = texto;
 	div.style.backgroundColor = color;
-	if( elem == "dp" ){ enlace.href = "#"; }
-	enlace.addEventListener("click", function(e) {
+	contenido.addEventListener("click", function(e) {
 	  ver_una_respuesta(e);
 	});
-	div.appendChild(enlace);
+	div.appendChild(contenido);
 	return div;
 }
 
